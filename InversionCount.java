@@ -5,8 +5,6 @@ import java.math.*;
 import java.util.regex.*;
 
 public class InversionCount {
-    //static int sz = 1000000 + 111;
-    //static int[] tree = new int[sz];
     public static void main(String[] args) {
         
         Scanner in = new Scanner(System.in);
@@ -31,7 +29,6 @@ public class InversionCount {
     public static long insertSort(int[] ar, int max)
     {
         long count = 0;
-        //Arrays.fill(tree, 0);
         
         int[] tree = new int[max+1];
         for(int a : ar){
