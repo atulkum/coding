@@ -22,5 +22,14 @@ namespace std {
                 return hash<string>()(name.first) ^ hash<string>()(name.second);
             }
     };
+    template <>
+        class equal_to<Name>{
+        public :
+            bool operator()(const Name &name1, const Name &name2) const{
+                return name1 == name2;
+            }
+    };
 };
+
+
 ```
