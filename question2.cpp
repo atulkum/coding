@@ -12,40 +12,42 @@ struct Node{
         t = _t;
         parent = _parent;
     }
-    void calCulateExpect(){
-        double sum = 0;
-        for(Node* node: children){
-            sum+= node->exp;
-        }
+    void calculateExpect(){
+        exp = t;
         if(!children.empty()){
-            exp = sum/children.size() + t;
-        }else{
-            exp = t;
+            double sum = 0;
+            for(Node* node: children){
+                sum += node->exp;
+            }
+            exp += sum/children.size();
         }
     }
-    void calCulateExpectWithParent(){
+    void calculateExpectWithParent(){
         using namespace std;
         if(parent == nullptr){
             expParent = exp;
         }else{
-            double sum = (parent->expParent - parent->t)*parent->children.size();
-            sum -= exp;
-            if(parent->children.size() > 1){
-                sum /= parent->children.size() - 1;
+            double newParentExp = (parent->expParent - parent->t)*(parent->children.size()+1);
+            newParentExp -= exp;
+            if(parent->children.size() > 0){
+                newParentExp /= parent->children.size();
             }
-            if(children.size() > 0){
-                sum /= children.size();
-            }
-            expParent = sum + exp;
+            newParentExp += parent->t;
+            expParent = (exp - t)*children.size() + newParentExp;
+            expParent /= (children.size()+1);
+            expParent += t;
+            
         }
     }
 };
 int relatedQuestions(int n, std::vector<int> t, std::vector<std::vector<int>> edges) {
     using namespace std;
     map<int, vector<int>> m;
+    map<int, int> parent;
     for(vector<int> e: edges){
         m[e[0]].push_back(e[1]);
     }
+    
     Node* root = new Node(0, 0, t[0], nullptr);
     queue<Node*> q;
     q.push(root);
@@ -68,17 +70,20 @@ int relatedQuestions(int n, std::vector<int> t, std::vector<std::vector<int>> ed
     
     for(int i = level; i >=0 ; --i){
         vector<Node*> levMap = levelmap[i];
+        
         for(Node * node: levMap){
-            node->calCulateExpect();
+            cout << node->id << " ";
+            node->calculateExpect();
         }
+        cout <<endl;
     }
     double minx = INT_MAX;
     int mini = -1;
     for(int i = 0; i <= level ; ++i){
         vector<Node*> levMap = levelmap[i];
         for(Node * node: levMap){
-            node->calCulateExpectWithParent();
-            cout << node->id << " " << node->expParent<< " "<< node->exp << endl;
+            node->calculateExpectWithParent();
+            //cout << node->id << " " << node->expParent<< " "<< node->exp << endl;
             if(node->expParent <minx ){
                 minx = node->expParent;
                 mini = node->id;
