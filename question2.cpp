@@ -1,15 +1,27 @@
+#include <cmath>
+#include <cstdio>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <set>
+#include <map>
+#include <queue>
+#include <limits> 
+
+using namespace std;
+
 struct Node{
-    int id,level,t,nChild;
+    int id,level,time,nChild;
     double exp,expParent;
     Node* parent;
     std::vector<Node*> children;
     
-    Node(int _id, int _level, int _t, Node* _parent){
-        id = _id; level = _level;  t = _t; parent = _parent;
-    }
+    Node(int _id, int _level, int _time, Node* _parent):
+            id(_id),level(_level), time (_time), parent(_parent){}
+    
     void calculateExpect(){
         nChild = children.size();
-        exp = t;
+        exp = time;
         if(!children.empty()){
             double sum = 0;
             for(Node* node: children){
@@ -19,27 +31,25 @@ struct Node{
         }
     }
     void calculateExpectWithParent(){
-        using namespace std;
         if(parent == nullptr){
             expParent = exp;
         }else{
-            double newParentExp = (parent->expParent - parent->t)*parent->nChild;
+            nChild = nChild+1;
+            double newParentExp = (parent->expParent - parent->time);
+            newParentExp *= parent->nChild;
             newParentExp -= exp;
             if(parent->nChild > 1){
                 newParentExp /= (parent->nChild-1);
             }
-            newParentExp += parent->t;
+            newParentExp += parent->time;
             
-            nChild = nChild+1;
-            
-            expParent = (exp - t)*children.size() + newParentExp;
+            expParent = (exp - time)*children.size() + newParentExp;
             expParent /= nChild;
-            expParent += t;
-            
+            expParent += time;
         }
     }
 };
-int relatedQuestions(int n, std::vector<int> t, std::vector<std::vector<int>> edges) {
+int relatedQuestions(int n, std::vector<int> timeToRead, std::vector<std::vector<int>> edges) {
     using namespace std;
     map<int, vector<int>> m;
     map<int, int> parent;
@@ -54,7 +64,7 @@ int relatedQuestions(int n, std::vector<int> t, std::vector<std::vector<int>> ed
             rootId = minId;
         }
     }
-    Node* root = new Node(rootId, 0, t[rootId], nullptr);
+    Node* root = new Node(rootId, 0, timeToRead[rootId], nullptr);
     queue<Node*> q;
     q.push(root);
     map<int, vector<Node*>> levelmap;
@@ -72,7 +82,7 @@ int relatedQuestions(int n, std::vector<int> t, std::vector<std::vector<int>> ed
         for(int c : children){
             if(visited.count(c) ==0){
                 Node* newNode = 
-                    new Node(c, node->level +1, t[c], node);
+                    new Node(c, node->level +1, timeToRead[c], node);
                 q.push(newNode);
                 node->children.push_back(newNode);
             }
@@ -100,4 +110,23 @@ int relatedQuestions(int n, std::vector<int> t, std::vector<std::vector<int>> ed
     }
     return mini;
     
+}
+
+int main() {
+    /* Enter your code here. Read input from STDIN. Print output to STDOUT */  
+    int n;
+    cin >> n;
+    std::vector<int> timeToRead(n);
+    for(int i = 0 ; i < n; ++i){
+        cin >> timeToRead[i];
+    }
+    std::vector<std::vector<int>> edges;
+    for(int i = 0 ; i < n-1; ++i){
+        std::vector<int> tmp(2);
+        cin >> tmp[0] >> tmp[1];
+        tmp[0]--; tmp[1]--;
+        edges.push_back(tmp);
+    }
+    cout << relatedQuestions(n,timeToRead,  edges)+1 << endl;
+    return 0;
 }
