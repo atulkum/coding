@@ -86,7 +86,7 @@ TreeNode* buildTree1(std::string treeRepr){
     std::vector<TreeNode*> stack;
     int i = 0;
     bool processed = false;
-    for(int i =0; i <= topics.size(); ++i){
+    for(int i =0; i < topics.size(); ++i){
         if(topics[i] == ")"){
 		processed = true;
                 std::vector<TreeNode*> children;
