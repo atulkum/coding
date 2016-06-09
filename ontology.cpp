@@ -3,6 +3,8 @@
 #include <iostream>
 #include <cassert>
 #include <sstream>
+#include <iterator>
+
 struct TreeNode{
     std::string topic;
     std::vector<TreeNode*> children;
