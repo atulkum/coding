@@ -7,7 +7,7 @@ private:
   vector<int> size;
   int N;
 public:
-  UnionFind(int _N): Arr(N), size(N), N(_N){
+  UnionFind(int _N): N(_N), Arr(N), size(N){
     initialize();
   }
   void initialize(){
@@ -17,7 +17,7 @@ public:
     }
   }
 
-  void weighted-union(int A,int B){
+  void weighted_union(int A,int B){
     int root_A = root(A);
     int root_B = root(B);
     if(root_A == root_B) {
