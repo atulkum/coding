@@ -20,6 +20,9 @@ public:
   void weighted-union(int A,int B){
     int root_A = root(A);
     int root_B = root(B);
+    if(root_A == root_B) {
+    	return;
+    }
     if(size[root_A] < size[root_B ]){
       Arr[ root_A ] = Arr[root_B];
       size[root_B] += size[root_A];
